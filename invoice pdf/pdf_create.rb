@@ -20,6 +20,7 @@ class PdfMaker
     else
       first_page
       put_items_next
+      page_number
     end
 
     pdf.render_file path
@@ -31,16 +32,17 @@ class PdfMaker
     header
     gen_info
     item_header_first
-    put_items(pdf, invoice)
-    footer(pdf,invoice)
+    put_items
+    footer
+    page_number
   end
 
   def first_page
     header
     gen_info
     item_header_first
-    #page_number
     put_items
+    #page_number
   end
 
   def setup_fonts
@@ -90,11 +92,13 @@ class PdfMaker
 
         pdf.text "#{invoice.sales_order_number}", size: 36, style: :bold, overflow: :shrink_to_fit
 
+        pdf.text "<u><link href='https://tapeonline.com/'>PAY HERE" + "</link></u>", :inline_format => true
 
         #stroke_bounds
       end # ENDS THE GRID BOUNDING BOX
     end # STAMP FOR HEADER
     pdf.stamp stamp_name
+    #page_number
   end
 
   def gen_info
@@ -110,28 +114,34 @@ class PdfMaker
             pdf.horizontal_line 0, 540, :at => pdf.cursor #y
           end
           pdf.move_down 5
-          original_y = pdf.cursor
-          pdf.text 'Bill to: ', style: :bold
-          pdf.move_cursor_to original_y
-          pdf.indent(38) do
-            pdf.text invoice.billing_address.name, overflow: :shrink_to_fit
+          #original_y = pdf.cursor
+          pdf.text 'Bill to: ', style: :bold, size: 10
+          #pdf.move_cursor_to original_y
+          #pdf.indent(38) do
+          pdf.text invoice.billing_address.name, size: 10, overflow: :shrink_to_fit
+          #end
+          if invoice.billing_address.co == true
+            pdf.text invoice.billing_address.company, size: 10, overflow: :shrink_to_fit
           end
-          pdf.text invoice.billing_address.full_street, overflow: :shrink_to_fit
-          pdf.text invoice.billing_address.city_state_zip, overflow: :shrink_to_fit
-          pdf.text invoice.billing_address.phone_number, overflow: :shrink_to_fit
+          pdf.text invoice.billing_address.full_street, size: 10, overflow: :shrink_to_fit
+          pdf.text invoice.billing_address.city_state_zip, size: 10, overflow: :shrink_to_fit
+          pdf.text invoice.billing_address.phone_number, size: 10, overflow: :shrink_to_fit
         end # ENDS THE GRID BOUNDING BOX ON LINE 86
         pdf.grid([3,3],[4,5]).bounding_box do
           # pdf.stroke_bounds
           pdf.move_down 5
-          original_y = pdf.cursor
-          pdf.text "Ship to: ", style: :bold
-          pdf.move_cursor_to original_y
-          pdf.indent(45) do
-            pdf.text invoice.shipping_address.name, overflow: :shrink_to_fit
+          #original_y = pdf.cursor
+          pdf.text "Ship to: ", style: :bold, size: 10
+          #pdf.move_cursor_to original_y
+          #pdf.indent(45) do
+          pdf.text invoice.shipping_address.name, size: 10, overflow: :shrink_to_fit
+          #end
+          if invoice.shipping_address.co == true
+            pdf.text invoice.shipping_address.company, size: 10, overflow: :shrink_to_fit
           end
-          pdf.text invoice.shipping_address.full_street, overflow: :shrink_to_fit
-          pdf.text invoice.shipping_address.city_state_zip, overflow: :shrink_to_fit
-          pdf.text invoice.shipping_address.phone_number, overflow: :shrink_to_fit
+          pdf.text invoice.shipping_address.full_street, size: 10, overflow: :shrink_to_fit
+          pdf.text invoice.shipping_address.city_state_zip, size: 10, overflow: :shrink_to_fit
+          pdf.text invoice.shipping_address.phone_number, size: 10, overflow: :shrink_to_fit
         end # ENDS THE GRID BOUNDING BOX ON LINE 94
         pdf.grid([3,6],[4,9]).bounding_box do
           #pdf.stroke_bounds
@@ -139,7 +149,8 @@ class PdfMaker
           pdf.define_grid(columns: 3, rows: 1, gutter: 0)
           #pdf.grid.show_all
           #pdf.stroke_axis
-          mv = 5
+          mv = 8
+          md = 3
             pdf.grid(0,0).bounding_box do
               #pdf.stroke_bounds
               pdf.bounding_box([0, pdf.cursor], :width => 72, :height => 20) do
@@ -147,72 +158,84 @@ class PdfMaker
                 pdf.fill_color 'C0C0C0'#'4d4dff'
                 pdf.rectangle [0, pdf.cursor], 72, 20
                 pdf.fill
-                pdf.move_down mv
-                pdf.indent(2) do
-                  pdf.text "Invoice Date", :color => ('000000'), align: :left #('FFFFFF')
-                end
+                pdf.move_down mv - md
+
+                pdf.text "Invoice Date", size: 10, align: :center, style: :bold, :color => ('000000') #('FFFFFF')
+
               end
               pdf.bounding_box([0, pdf.cursor], :width => 72, :height => 25) do
                 pdf.stroke_bounds
-                pdf.move_down mv + 3
-                pdf.indent(2) do
-                  pdf.text invoice.invoice_date, style: :bold, size: 11, :color => '000000', overflow: :shrink_to_fit
-                end
+                pdf.fill_color 'FFFFFF'#'4d4dff'
+                pdf.rectangle [0, pdf.cursor], 72, 25
+                pdf.fill
+                pdf.move_down mv
+
+                pdf.text invoice.invoice_date, size: 10, align: :center, :color => '000000', overflow: :shrink_to_fit
+
               end
               pdf.bounding_box([0, pdf.cursor], :width => 72, :height => 20) do
                 pdf.stroke_bounds
                 pdf.fill_color 'C0C0C0'#'4d4dff'
                 pdf.rectangle [0, pdf.cursor], 72, 20
                 pdf.fill
-                pdf.move_down mv
-                pdf.indent(2) do
-                  pdf.text "Order Date", :color => ('000000')#('FFFFFF')
-                end
+                pdf.move_down mv - md
+
+                pdf.text "Order Date", :color => ('000000'), size: 10, align: :center, style: :bold#('FFFFFF')
+
               end
               pdf.bounding_box([0, pdf.cursor], :width => 72, :height => 25) do
                 pdf.stroke_bounds
-                pdf.move_down mv + 3
-                pdf.indent(2) do
-                  pdf.text invoice.order_date, style: :bold, size: 11, :color => '000000', overflow: :shrink_to_fit
-                end
+                pdf.fill_color 'FFFFFF'#'4d4dff'
+                pdf.rectangle [0, pdf.cursor], 72, 25
+                pdf.fill
+                pdf.move_down mv
+
+                pdf.text invoice.order_date, size: 10, align: :center, :color => '000000', overflow: :shrink_to_fit
+
               end
             end # ENDS THE GRID BOUNDING BOX ON LINE 106
             pdf.grid(0,1).bounding_box do
-              pdf.stroke_bounds
+              #pdf.stroke_bounds
 
               pdf.bounding_box([0, pdf.cursor], :width => 72, :height => 20) do
                 pdf.stroke_bounds
                 pdf.fill_color 'C0C0C0' #'4d4dff'
                 pdf.rectangle [0, pdf.cursor], 72, 20
                 pdf.fill
-                pdf.move_down mv
-                pdf.indent(2) do
-                  pdf.text "Due Date", :color => ('000000')#('FFFFFF')
-                end
+                pdf.move_down mv - md
+
+                pdf.text "Due Date", size: 10, align: :center, style: :bold, :color => ('000000')#('FFFFFF')
+
               end
               pdf.bounding_box([0, pdf.cursor], :width => 72, :height => 25) do
                 pdf.stroke_bounds
-                pdf.move_down mv + 3
-                pdf.indent(2) do
-                  pdf.text invoice.due_on, align: :left, size: 11, style: :bold, :color => ('000000'), overflow: :shrink_to_fit
-                end
+                pdf.fill_color 'FFFFFF'#'4d4dff'
+                pdf.rectangle [0, pdf.cursor], 72, 25
+                pdf.fill
+                pdf.move_down mv
+
+                pdf.text invoice.due_on, size: 10, align: :center, :color => ('000000'), overflow: :shrink_to_fit
+
               end
               pdf.bounding_box([0, pdf.cursor], :width => 72, :height => 20) do
                 pdf.stroke_bounds
                 pdf.fill_color 'C0C0C0'#'4d4dff'
                 pdf.rectangle [0, pdf.cursor], 72, 20
                 pdf.fill
-                pdf.move_down mv
-                pdf.indent(2) do
-                  pdf.text "Order #", :color => ('000000')#('FFFFFF')
-                end
+                pdf.move_down mv - md
+
+                pdf.text "Order #", size: 10, align: :center, style: :bold, :color => ('000000')#('FFFFFF')
+
               end
               pdf.bounding_box([0, pdf.cursor], :width => 72, :height => 25) do
                 pdf.stroke_bounds
+                pdf.fill_color 'FFFFFF'#'4d4dff'
+                pdf.rectangle [0, pdf.cursor], 72, 25
+                pdf.fill
                 pdf.move_down mv
-                pdf.indent(2) do
-                  pdf.text invoice.sales_order_number.to_s, align: :left, size: 14, style: :bold, :color => ('000000')
-                end
+
+                pdf.text invoice.sales_order_number.to_s, size: 10, align: :center, :color => ('000000')
+
               end
             end # ENDS THE GRID BOUNDING BOX ON LINE 114
 
@@ -223,35 +246,41 @@ class PdfMaker
                 pdf.fill_color 'C0C0C0'#'4d4dff'
                 pdf.rectangle [0, pdf.cursor], 72, 20
                 pdf.fill
-                pdf.move_down mv
-                pdf.indent(0,2) do
-                  pdf.text "Amount Due", :color => ('000000'), align: :right#('FFFFFF')
-                end
-              end
-              pdf.bounding_box([0, pdf.cursor], :width => 72, :height => 25) do
-                pdf.stroke_bounds
-                pdf.move_down mv
-                pdf.indent(0,2) do
-                  pdf.text ActiveSupport::NumberHelper::number_to_currency(invoice.total), overflow: :shrink_to_fit, :color => ('000000'), align: :right
-                end
-              end
-              pdf.bounding_box([0, pdf.cursor], :width => 72, :height => 20) do
-                pdf.stroke_bounds
-                pdf.fill_color 'C0C0C0'#'4d4dff'
-                pdf.rectangle [0, pdf.cursor], 72, 20
-                pdf.fill
-                pdf.move_down mv
-                pdf.indent(0,2) do
-                  pdf.text "Pur Order #", :color => ('000000'), align: :right#('FFFFFF') #Purchase Order #
-                end
+                pdf.move_down mv - md
+
+                pdf.text "Amount Due", size: 10, align: :center, style: :bold, :color => ('000000')#('FFFFFF')
 
               end
               pdf.bounding_box([0, pdf.cursor], :width => 72, :height => 25) do
                 pdf.stroke_bounds
+                pdf.fill_color 'FFFFFF'#'4d4dff'
+                pdf.rectangle [0, pdf.cursor], 72, 25
+                pdf.fill
                 pdf.move_down mv
-                pdf.indent(0,2) do
-                  pdf.text invoice.po_number, align: :right, style: :bold, :color => ('000000'), overflow: :shrink_to_fit
-                end
+
+                pdf.text ActiveSupport::NumberHelper::number_to_currency(invoice.total), size: 10, align: :center, overflow: :shrink_to_fit, :color => ('000000')
+
+              end
+              pdf.bounding_box([0, pdf.cursor], :width => 72, :height => 20) do
+                pdf.stroke_bounds
+                pdf.fill_color 'C0C0C0' #'4d4dff'
+                pdf.rectangle [0, pdf.cursor], 72, 20
+                pdf.fill
+                pdf.move_down mv - md
+
+                pdf.text "PO #", size: 10, align: :center, style: :bold, :color => ('000000')#('FFFFFF') #Purchase Order #
+
+
+              end
+              pdf.bounding_box([0, pdf.cursor], :width => 72, :height => 25) do
+                pdf.stroke_bounds
+                pdf.fill_color 'FFFFFF'#'4d4dff'
+                pdf.rectangle [0, pdf.cursor], 72, 25
+                pdf.fill
+                pdf.move_down mv
+
+                pdf.text invoice.po_number, size: 10, align: :center, :color => ('000000'), overflow: :shrink_to_fit
+
               end
             end # ENDS THE GRID BOUNDING BOX ON LINE 124
         end # ENDS THE GRID BOUNDING BOX ON LINE 102
@@ -267,12 +296,13 @@ class PdfMaker
     pdf.create_stamp(stamp_name) do
       pdf.grid([5,0], [5,4]).bounding_box do
           #stroke_bounds
-          pdf.move_down 5
+          pdf.move_down 15
           pdf.text "Item", style: :bold
-          pdf.text "Description"
+          #pdf.text "Description"
+          pdf.move_down 3
           pdf.stroke do
             pdf.line_width = 4
-            pdf.stroke_color 250, 0, 0, 1
+            pdf.stroke_color "000000"
             pdf.horizontal_line 0, 540, :at => pdf.cursor #y
             # self.line_width = 1
             # stroke_color "000000"
@@ -280,19 +310,19 @@ class PdfMaker
       end
       pdf.grid(5,5).bounding_box do
           #stroke_bounds
-          pdf.move_down 5
-          pdf.text "QTY", align: :right, size: 14, style: :bold
+          pdf.move_down 15
+          pdf.text "QTY", align: :right, style: :bold
       end
       pdf.grid([5,6], [5,7]).bounding_box do
           #stroke_bounds
-          pdf.move_down 5
-          pdf.text "Price", align: :right, size: 14, style: :bold
+          pdf.move_down 15
+          pdf.text "Price", align: :right, style: :bold
 
       end
       pdf.grid([5,8], [5,9]).bounding_box do
           #stroke_bounds
-          pdf.move_down 5
-          pdf.text "Total", align: :right, size: 14, style: :bold
+          pdf.move_down 15
+          pdf.text "Total", align: :right, style: :bold
       end
     end
     pdf.stamp stamp_name
@@ -307,10 +337,10 @@ class PdfMaker
           #stroke_bounds
           pdf.move_down 5
           pdf.text "Item", style: :bold
-          pdf.text "Description"
+          #pdf.text "Description"
           pdf.stroke do
             pdf.line_width = 4
-            pdf.stroke_color 250, 0, 0, 1
+            pdf.stroke_color "000000"
             pdf.horizontal_line 0, 540, :at => pdf.cursor #y
             # self.line_width = 1
             # stroke_color "000000"
@@ -340,8 +370,39 @@ class PdfMaker
     pdf.define_grid(columns: 10, rows: 16, gutter: 0)
     stamp_name = next_stamp("Footer")
     pdf.create_stamp(stamp_name) do
-      pdf.grid([14,0],[15,6]).bounding_box do
-        #stroke_bounds
+      pdf.grid([14,0],[15,2]).bounding_box do
+        #pdf.stroke_bounds
+        if 1== 1 #tenant.show_terms == true
+          pdf.define_grid(columns: 2, rows: 1, gutter: 0)
+
+          pdf.grid(0, 0).bounding_box do
+            # transparent(0.05) { stroke_bounds }
+            pdf.text 'Payment Terms', style: :bold, overflow: :shrink_to_fit, size: 10
+            pdf.text 'Account Balance', style: :bold, overflow: :shrink_to_fit, size: 10
+            # pdf.text 'Current', style: :bold, overflow: :shrink_to_fit, size: 10
+            # pdf.text '31-60', style: :bold, overflow: :shrink_to_fit, size: 10
+            # pdf.text '61-90', style: :bold, overflow: :shrink_to_fit, size: 10
+            # pdf.text '91-120', style: :bold, overflow: :shrink_to_fit, size: 10
+            #pdf.text 'Total Due', style: :bold, overflow: :shrink_to_fit, size: 10
+          end
+
+          pdf.grid(0, 1).bounding_box do
+            pdf.text "Net 30", overflow: :shrink_to_fit, align: :right, size: 10
+            pdf.text ActiveSupport::NumberHelper::number_to_currency(invoice.shipping), overflow: :shrink_to_fit, align: :right, size: 10
+            # pdf.text ActiveSupport::NumberHelper::number_to_currency(invoice.tax), overflow: :shrink_to_fit, align: :right, size: 10
+            # pdf.text ActiveSupport::NumberHelper::number_to_currency(invoice.discount), overflow: :shrink_to_fit, align: :right, size: 10
+            # pdf.text ActiveSupport::NumberHelper::number_to_currency(invoice.total), overflow: :shrink_to_fit, align: :right, size: 10
+            # pdf.text ActiveSupport::NumberHelper::number_to_currency(0), overflow: :shrink_to_fit, align: :right, size: 10
+            #pdf.text ActiveSupport::NumberHelper::number_to_currency(invoice.balance), style: :bold, overflow: :shrink_to_fit, align: :right, size: 10
+          end
+        end
+
+      end
+      pdf.define_grid(columns: 10, rows: 16, gutter: 0)
+      pdf.grid([14,3],[15,6]).bounding_box do
+        #pdf.stroke_bounds
+
+        pdf.text_box invoice.byline, size: 10, align: :center, style: :bold
       end
       pdf.grid([14,7],[15,9]).bounding_box do
         #stroke_bounds
@@ -362,9 +423,9 @@ class PdfMaker
           pdf.text ActiveSupport::NumberHelper::number_to_currency(invoice.shipping), overflow: :shrink_to_fit, align: :right, size: 10
           pdf.text ActiveSupport::NumberHelper::number_to_currency(invoice.tax), overflow: :shrink_to_fit, align: :right, size: 10
           pdf.text ActiveSupport::NumberHelper::number_to_currency(invoice.discount), overflow: :shrink_to_fit, align: :right, size: 10
-          pdf.text ActiveSupport::NumberHelper::number_to_currency(invoice.total), overflow: :shrink_to_fit, align: :right, size: 10
+          pdf.text ActiveSupport::NumberHelper::number_to_currency(invoice.total), style: :bold, overflow: :shrink_to_fit, align: :right, size: 10
           pdf.text ActiveSupport::NumberHelper::number_to_currency(0), overflow: :shrink_to_fit, align: :right, size: 10
-          pdf.text ActiveSupport::NumberHelper::number_to_currency(invoice.balance), overflow: :shrink_to_fit, align: :right, size: 10
+          pdf.text ActiveSupport::NumberHelper::number_to_currency(invoice.balance), style: :bold, overflow: :shrink_to_fit, align: :right, size: 10
         end
       end
     end
@@ -385,7 +446,7 @@ class PdfMaker
         pdf.text item.description, overflow: :shrink_to_fit, size: 8
         pdf.stroke do
           pdf.line_width = 1
-          pdf.stroke_color(250, 0, 0, 0.1)
+          pdf.stroke_color 'C0C0C0'
           pdf.horizontal_line 0, 540, :at => pdf.cursor #y
         end
         pdf.move_down 4
@@ -497,13 +558,15 @@ class PdfMaker
   def page_number
     pdf.define_grid(columns: 10, rows: 16, gutter: 0)
     pdf.grid([15,4],[15,5]).bounding_box do
+      # pdf.stroke_bounds
+      #pdf.stroke_axis
       page_string = '<page> of <total>'
       options = {
-        at: [bounds.right + 34, 35],
-        width: 150,
-        align: :right
+        at: [0,0],
+        #width: 150,
+        align: :center
       }
-      number_pages page_string, options
+      pdf.number_pages page_string, options
     end
   end
 

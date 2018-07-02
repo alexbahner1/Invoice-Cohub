@@ -14,10 +14,10 @@ DATA = {
   invoice: {
     id: 2786,
     sales_order_number: 59246,
-    order_date: Time.at(1515618769).strftime('%b/%d/%Y'),
-    invoice_date: Time.at(1515608769).strftime('%b/%d/%Y'),
+    order_date: Time.at(1515618769).strftime('%b %d, %Y'),
+    invoice_date: Time.at(1515608769).strftime('%b %d, %Y'),
     invoice_year: Time.at(1515608769).strftime('%Y'),
-    due_on: Time.at(1518200764).strftime('%b/%d/%Y'),
+    due_on: Time.at(1518200764).strftime('%b %d, %Y'),
     due_on_year: Time.at(1518200764).strftime('%Y'),
     subtotal: 0.00,
     shipping: 0.00,
@@ -33,17 +33,22 @@ DATA = {
       name: 'Ashley Hays',
       id: 1234
     },
+    byline: 'Thank you have a great day!!!',
     #customer_name: 'Alex Bahner',
     billing_address: {
       'filled_in?' => true,
+      co: true,
       name: 'Dave Smith',
+      company: 'Cohub',
       full_street: '438 Houston St. Suite 288',
       city_state_zip: 'Nashville, TN 37203',
       phone_number: '877-296-3041'
     },
     shipping_address:{
         'filled_in?' => true,
+        co: false,
         name: 'Alex Bahner',
+        company: 'Kroger Co',
         full_street: '1132 Garrett Way',
         city_state_zip: 'Huntsville, AB 37203',
         phone_number: '453-345-7658'
@@ -146,108 +151,108 @@ DATA = {
         description: "Cool stuff",
         quantity: 4,
         price: 14.5
-      },
-      {
-        id: 15,
-        title: "Item #1",
-        description: "Cool stuff",
-        quantity: 4,
-        price: 14.5
-      },
-      {
-        id: 16,
-        title: "Item #1",
-        description: "Cool stuff",
-        quantity: 4,
-        price: 14.5
-      },
-      {
-        id: 17,
-        title: "Item #1",
-        description: "Cool stuff",
-        quantity: 4,
-        price: 14.5
-      },
-      {
-        id: 18,
-        title: "Item #1",
-        description: "Cool stuff",
-        quantity: 4,
-        price: 14.5
-      },
-      {
-        id: 18,
-        title: "Item #1",
-        description: "Cool stuff",
-        quantity: 4,
-        price: 14.5
-      },{
-        id: 18,
-        title: "Item #1",
-        description: "Cool stuff",
-        quantity: 4,
-        price: 14.5
-      },{
-        id: 18,
-        title: "Item #1",
-        description: "Cool stuff",
-        quantity: 4,
-        price: 14.5
-      },{
-        id: 18,
-        title: "Item #1",
-        description: "Cool stuff",
-        quantity: 4,
-        price: 14.5
-      },{
-        id: 18,
-        title: "Item #1",
-        description: "Cool stuff",
-        quantity: 4,
-        price: 14.5
-      },{
-        id: 18,
-        title: "Item #1",
-        description: "Cool stuff",
-        quantity: 4,
-        price: 14.5
-      },{
-        id: 18,
-        title: "Item #1",
-        description: "Cool stuff",
-        quantity: 4,
-        price: 14.5
-      },{
-        id: 18,
-        title: "Item #1",
-        description: "Cool stuff",
-        quantity: 4,
-        price: 14.5
-      },{
-        id: 18,
-        title: "Item #1",
-        description: "Cool stuff",
-        quantity: 4,
-        price: 14.5
-      },{
-        id: 18,
-        title: "Item #1",
-        description: "Cool stuff",
-        quantity: 4,
-        price: 14.5
-      },{
-        id: 18,
-        title: "Item #1",
-        description: "Cool stuff",
-        quantity: 4,
-        price: 14.5
-      },{
-        id: 18,
-        title: "Item #1",
-        description: "Cool stuff",
-        quantity: 4,
-        price: 14.5
-      },
+      }#,
+      # {
+      #   id: 15,
+      #   title: "Item #1",
+      #   description: "Cool stuff",
+      #   quantity: 4,
+      #   price: 14.5
+      # },
+      # {
+      #   id: 16,
+      #   title: "Item #1",
+      #   description: "Cool stuff",
+      #   quantity: 4,
+      #   price: 14.5
+      # },
+      # {
+      #   id: 17,
+      #   title: "Item #1",
+      #   description: "Cool stuff",
+      #   quantity: 4,
+      #   price: 14.5
+      # },
+      # {
+      #   id: 18,
+      #   title: "Item #1",
+      #   description: "Cool stuff",
+      #   quantity: 4,
+      #   price: 14.5
+      # },
+      # {
+      #   id: 18,
+      #   title: "Item #1",
+      #   description: "Cool stuff",
+      #   quantity: 4,
+      #   price: 14.5
+      # },{
+      #   id: 18,
+      #   title: "Item #1",
+      #   description: "Cool stuff",
+      #   quantity: 4,
+      #   price: 14.5
+      # },{
+      #   id: 18,
+      #   title: "Item #1",
+      #   description: "Cool stuff",
+      #   quantity: 4,
+      #   price: 14.5
+      # },{
+      #   id: 18,
+      #   title: "Item #1",
+      #   description: "Cool stuff",
+      #   quantity: 4,
+      #   price: 14.5
+      # },{
+      #   id: 18,
+      #   title: "Item #1",
+      #   description: "Cool stuff",
+      #   quantity: 4,
+      #   price: 14.5
+      # },{
+      #   id: 18,
+      #   title: "Item #1",
+      #   description: "Cool stuff",
+      #   quantity: 4,
+      #   price: 14.5
+      # },{
+      #   id: 18,
+      #   title: "Item #1",
+      #   description: "Cool stuff",
+      #   quantity: 4,
+      #   price: 14.5
+      # },{
+      #   id: 18,
+      #   title: "Item #1",
+      #   description: "Cool stuff",
+      #   quantity: 4,
+      #   price: 14.5
+      # },{
+      #   id: 18,
+      #   title: "Item #1",
+      #   description: "Cool stuff",
+      #   quantity: 4,
+      #   price: 14.5
+      # },{
+      #   id: 18,
+      #   title: "Item #1",
+      #   description: "Cool stuff",
+      #   quantity: 4,
+      #   price: 14.5
+      # },{
+      #   id: 18,
+      #   title: "Item #1",
+      #   description: "Cool stuff",
+      #   quantity: 4,
+      #   price: 14.5
+      # },{
+      #   id: 18,
+      #   title: "Item #1",
+      #   description: "Cool stuff",
+      #   quantity: 4,
+      #   price: 14.5
+      # },
 
 
 
